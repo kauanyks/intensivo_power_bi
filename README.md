@@ -1,27 +1,27 @@
-# Introdução
+# Introduction
 
-4 projetos de Power BI desenvolvidos durante um curso intensivo ministrado pelo professor Ítalo Teotônio em março de 2023, com carga horária de 10 horas. 
+4 Power BI projects developed during an intensive course taught by Professor Ítalo Teotônio in March 2023, with a workload of 10 hours.
 
 # Dashboards
 
-## Dashboard de Estoque
+## Stock Dashboard
 
-### Desafio
+### Challenge
 
-Você recebeu algumas bases de dados com movimentos de estoque, do ano de 2020, de uma empresa do segmento de vestuário. Você tem o desafio de analisar estas bases de dados e construir um relatório que:
+You have received some databases with stock movements from 2020 from a company in the clothing segment. You have the challenge of analyzing these databases and building a report that:
 
-- Apresente a análise de estoque por loja x categoria.
-- Apresente a análise de estoque por período.
-- Apresente a análise de movimentação de estoque por categoria x subcategoria.
-- Apresente a análise de estoque por subcategoria e por produto.
-- Apresente o estoque atual, bem como informações gerais sobre Entrada, Saída e Devoluções.
-- Permita a interação entre as diversas informações, com o intuito de realização de análises diversas.
+- Presents the stock analysis by store x category.
+- Presents the stock analysis by period.
+- Presents the stock movement analysis by category x subcategory.
+- Presents the stock analysis by subcategory and by product.
+- Presents the current stock, as well as general information about Input, Output and Returns.
+- Allows interaction between the various pieces of information, in order to perform various analyses.
 
-### Base de Dados
+### Database
 
-Arquivo no formato .xlsx, com 3 banco de dados disponíveis:
+File in .xlsx format, with 3 databases available:
 
-Estoque
+Stock
 ```
 schema = (
     cod movimento,
@@ -32,7 +32,7 @@ schema = (
     tipo
 )
 ```
-Produtos
+Products
 ```
 schema = (
     código produto,
@@ -41,7 +41,7 @@ schema = (
     preço unitário
 )
 ```
-Calendário
+Calendar
 ```
 schema = (
     data
@@ -50,13 +50,13 @@ schema = (
 
 ### Dashboard
 
-Algumas transformações foram realizadas via Power Query, tais como: 
+ASome transformations were performed via Power Query, such as:
 
-O campo "descrição do produto-categoria-subcategoria" da tabela Calendário foi alterado para trazer as informações de Produto, Categoria e Subcategoria separadamente, uma vez que estavam delimitados por um hífen ("-") na coluna
+The "product description-category-subcategory" field in the Calendar table was changed to bring the Product, Category and Subcategory information separately, since they were delimited by a hyphen ("-") in the column
 ```
 = Table.SplitColumn(#"Tipo Alterado", "DESCRIÇÃO DO PRODUTO-CATEGORIA-SUBCATEGORIA", Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"DESCRIÇÃO DO PRODUTO-CATEGORIA-SUBCATEGORIA.1", "DESCRIÇÃO DO PRODUTO-CATEGORIA-SUBCATEGORIA.2", "DESCRIÇÃO DO PRODUTO-CATEGORIA-SUBCATEGORIA.3"})
 ```
-A tabela Calendário traz algumas informações adicionais como Ano, Trimestre, Mês, Nome do Mês e Nome do Mês Abreviado. 
+The Calendar table provides some additional information such as Year, Quarter, Month, Month Name and Abbreviated Month Name.
 ```
 = Table.AddColumn(#"Tipo Alterado", "Ano", each Date.Year([DATA]), Int64.Type)
 ```
@@ -73,46 +73,46 @@ A tabela Calendário traz algumas informações adicionais como Ano, Trimestre, 
 = Table.AddColumn(#"Colocar Cada Palavra Em Maiúscula", "Primeiros caracteres", each Text.Start(Text.Upper([Nome do Mês]), 3), type text)
 = Table.RenameColumns(#"Primeiros Caracteres Inseridos",{{"Primeiros caracteres", "Mês Abreviado"}})
 ```
-A tabela Calendário se relaciona com a Estoque pelo campo "Data", em uma relação de 1 para muitos. A tabela Produtos se relaciona com a tabela Estoque através do campo "Código Produto" em uma relação de 1 para muitos também.
+The Calendar table relates to the Inventory table through the "Date" field, in a 1-to-many relationship. The Products table relates to the Inventory table through the "Product Code" field in a 1-to-many relationship as well.
 
-A parte visual do Dash se divide em três principais grupos: filtros, big numbers e gráficos interativos. 
+The visual part of Dash is divided into three main groups: filters, big numbers and interactive graphs.
 
-Os filtros funcionam para todos os visuais e permitem filtrar por algum mês específico ou loja específica.
+The filters work for all visuals and allow you to filter by a specific month or store.
 
-Os Big Numbers apresentados referem-se a estoque acumulado, entradas, saídas e devoluções.
+The Big Numbers presented refer to accumulated stock, entries, exits and returns.
 
-4 informações são apresentadas de forma gráfica:
+4 pieces of information are presented graphically:
 
-Itens em Estoque por Subcategoria e Produto, apresentado a partir de um treemap que apresenta a subcategoria e uma dica de ferramenta personalizada que apresenta os produtos que pertencem a categoria e os valores de cada um.
+Items in Stock by Subcategory and Product, presented from a treemap that shows the subcategory and a personalized tooltip that shows the products that belong to the category and the values ​​of each one.
 
-Estoque Acumulado por Mês, trazendo uma visão mês a mês da soma de estoque.
+Accumulated Stock by Month, providing a month-by-month view of the total stock.
 
-Análise de Movimentações de Itens de Estoque, representado por uma árvore hierárquica que permite analisar o estoque com maior granularidade, a partir do tipo (entrada, devolução ou saída), categoria e subcategoria.
+Analysis of Stock Item Movements, represented by a hierarchical tree that allows you to analyze the stock with greater granularity, based on the type (entry, return or exit), category and subcategory.
 
-Por fim, Itens em Estoque por Loja x Categoria, representado por um simples gráfico de colunas empilhadas.
+Finally, Items in Stock by Store x Category, represented by a simple stacked column graph.
 
-## Dashboard de Recursos Humanos
+## Human Resources Dashboard
 
-### Desafio
+### Challenge
 
-O gestor de uma empresa está analisando informações a respeito dos colaboradores da organização e lhe enviou um e-mail com alguns questionamentos e uma base de dados dos funcionários da empresa. Os questionamentos são:
+The manager of a company is analyzing information about the organization's employees and sent you an email with some questions and a database of the company's employees. The questions are:
 
-- Quantos funcionários existem atualmente na empresa?
-- Atualmente, existem mais funcionários do gênero masculino ou do gênero feminino?
-- Quantos funcionários existem em cada setor da organização?
-- Quantos funcionários já fizeram pós-graduação, mestrado ou doutorado?
-- Quantos funcionários do gênero feminino estão em cargos de direção, gerência ou supervisão?
-- Qual a cidade que possui a maior quantidade de funcionários?
-- Quais os dois setores em que existe maior custo com salário?
-- Quantos estagiários existem na organização e qual o valor gasto atualmente com o salário destes estagiários?
-- Qual a média salarial dos Analistas III?
-- Qual a quantidade de funcionários e o valor gasto de salários por faixa etária?
-- Qual o total de salários gasto em cada cidade?
-- Qual a média salarial do gênero masculino e do gênero feminino?
+- How many employees are currently in the company?
+- Are there currently more male or female employees?
+- How many employees are in each sector of the organization?
+- How many employees have completed postgraduate, master's or doctoral degrees?
+- How many female employees are in management, supervisory or supervisory positions?
+- Which city has the largest number of employees?
+- Which two sectors have the highest salary costs?
+- How many interns are there in the organization and how much is currently spent on their salaries?
+- What is the average salary for Analysts III?
+- How many employees and how much is spent on salaries by age group?
+- What is the total salary spent in each city?
+- What is the average salary for male and female employees?
 
-### Base de dados
+### Database
 
-Arquivo no formato .xlsx, com 1 banco de dados disponível:
+File in .xlsx format, with 1 database available:
 ```
 schema = (
     registro2, 
@@ -143,39 +143,39 @@ schema = (
 
 ### Dashboard
 
-Algumas transformações foram realizadas via Power Query, tais como: A base de dados trazia uma idade estática, da qual foi substituida por uma coluna calculada em que traz a idade real.
+Some transformations were performed via Power Query, such as: The database had a static age, which was replaced by a calculated column showing the real age.
 ```
 = Table.AddColumn(#"Colunas Removidas1", "Idade.1", each Date.From(DateTime.LocalNow()) - [Data de Nascimento], type duration)
 = Table.TransformColumns(#"Colunas Reordenadas",{{"Idade.1", each Duration.TotalDays(_) / 365, type number}})
 = Table.TransformColumns(#"Total de Anos Calculado",{{"Idade.1", Number.RoundDown, Int64.Type}})
 ```
 
-A parte visual do Dash se divide em quatro telas: 
+The visual part of the Dash is divided into four screens:
 
-MENU: traz uma tela nomeando o assunto tratado no projeto, bem como botões de links externos para minhas redes pessoais, como Instagram e Linkedin, além do site da empresa de treinamentos.
+MENU: brings up a screen naming the subject covered in the project, as well as buttons for external links to my personal networks, such as Instagram and LinkedIn, in addition to the training company's website.
 
-ANÁLISE PESSOAL: há uma tarja na lateral esquerda, que apresentam botões de ação para navegação entre as telas e botões de link externos, presentes em ambas as telas de informações. Há também uma área destinada a filtros de setor, gênero, escolaridade, cargo, faixa etária e estado, também presentes em ambas telas e com filtros sincronizados, ou seja, a alteração de algum deles em uma página é replicada nas demais. A tela também traz gráficos de análise de funcionários por escolaridade, setor, gênero, faixa etária, cargo e cidade.
+PERSONAL ANALYSIS: there is a strip on the left side, which presents action buttons for navigation between screens and external link buttons, present on both information screens. There is also an area for filters by sector, gender, education, position, age group and state, also present on both screens and with synchronized filters, that is, changing any of them on one page is replicated on the others. The screen also presents graphs analyzing employees by education, sector, gender, age group, position and city.
 
-ANÁLISE FINANCEIRA: além dos itens já citados anteriormente, a tela apresenta big numbers de total de salários, média salarial e total de funcionários. Graficamente há a representação das informações de total de salários por escolaridade, setor, cargo, faixa etária e cidade. 
+FINANCIAL ANALYSIS: in addition to the items previously mentioned, the screen presents big numbers for total salaries, average salary and total employees. Graphically, there is a representation of the information on total salaries by education, sector, position, age group and city. 
 
-PÁGINA DE CONTATOS: nessa tela é novamente apresentado os botões de link externos, juntamente com a exposição de uma foto pessoal e um botão que possibilita o retorno à tela home.
+CONTACTS PAGE: this screen displays the external link buttons again, along with a personal photo and a button that allows you to return to the home screen.
 
-## Dashboard de Resultados Financeiro
+## Financial Results Dashboard
 
-### Desafio
+### Challenge
 
-Você recebeu algumas bases de dados, para que possa realizar a análise dos resultados de uma empresa, no ano de 2020. Você tem o desafio de analisar estas bases de dados e construir um relatório que:
+You have received some databases so that you can analyze a company's results in 2020. You have the challenge of analyzing these databases and creating a report that:
 
-- Apresente a receita da empresa por período, durante todo o ano de 2020.
-- Apresente um comparativo de produtos, que demonstre a relação de receita x quantidade de itens vendidos daquele produto.
-- Apresente uma análise de receita e lucro, por supervisor e por vendedor.
-- Apresente um indicador que compare a receita com a respectiva meta, de forma que seja possível analisar por vendedor, período e produto.
+- Presents the company's revenue by period, throughout 2020.
+- Presents a product comparison, demonstrating the relationship between revenue and quantity of items sold for that product.
+- Presents an analysis of revenue and profit, by supervisor and by salesperson.
+- Presents an indicator that compares revenue with the respective target, so that it is possible to analyze by salesperson, period and product.
+  
+### Database
 
-### Base de Dados
+Files in .xlsx format, with 5 databases available:
 
-Arquivos no formato .xlsx, com 5 banco de dados disponíveis:
-
-Relatório
+Report
 ```
 schema = (
     data_nf,
@@ -188,7 +188,7 @@ schema = (
     preço unitário
 )
 ```
-Pessoas
+People
 ```
 schema = (
     cod_vendedor,
@@ -196,7 +196,7 @@ schema = (
 	supervisor
 )
 ```
-Produtos
+Products
 ```
 schema = (
     cod_produto,
@@ -207,7 +207,7 @@ schema = (
     preço_unitário
 )
 ```
-Calendário 2020
+Calendar 2020
 ```
 schema = (
     data,
@@ -218,7 +218,7 @@ schema = (
     mês abreviado
 )
 ```
-Metas
+Goals
 ```
 schema = (
     apuração,
@@ -232,28 +232,29 @@ schema = (
 
 ### Dashboard
 
-Algumas transformações foram realizadas via Power Query, tais como: 
+Some transformations were performed via Power Query, such as:
 
-Foi criada uma coluna na tabela Calendário que traz o último dia do mês 
+A column was created in the Calendar table that shows the last day of the month
 ```
 = Table.AddColumn(#"Tipo Alterado", "Fim do Mês", each Date.EndOfMonth([DATA]), type date)
 ```
 
-Esse Dashboard apresenta uma relação entre as tabelas um pouco mais complexa que os demais, uma vez que possui 2 tabelas fato e 3 tabelas dimensão. A tabela Calendário se relaciona com a tabela de Metas pelo campo "Apuração" em uma relação de 1 para muitos e com a tabela de Vendas pelo campo "Data_NF" novamente em uma relação de 1 para muitos. A tabela Produtos se relaciona com a tabela de Metas pelo campo "Produto" em uma relação de 1 para muitos e com a tabela de Vendas pelo campo "Cod_Produto" novamente em uma relação de 1 para muitos. A tabela Vendedores se relaciona com a tabela de Metas pelo campo "Vendedor" em uma relação de 1 para muitos e com a tabela de Vendas pelo campo "Cod_Vendedor" novamente em uma relação de 1 para muitos. 
+This Dashboard presents a slightly more complex relationship between tables than the others, since it has 2 fact tables and 3 dimension tables. The Calendar table is related to the Goals table through the "Aclaração" field in a 1-to-many relationship and to the Sales table through the "Date_NF" field, again in a 1-to-many relationship. The Products table is related to the Goals table through the "Produto" field in a 1-to-many relationship and to the Sales table through the "Cod_Produto" field, again in a 1-to-many relationship. The Salespeople table is related to the Goals table through the "Vendedor" field in a 1-to-many relationship and to the Sales table through the "Cod_Vendedor" field, again in a 1-to-many relationship.
 
-A parte visual do Dash se divide em dois principais grupos: big numbers e gráficos interativos. 
+The visual part of Dash is divided into two main groups: big numbers and interactive graphs.
 
-Os Big Numbers apresentados referem-se a receita total e lucro total    .
+The Big Numbers presented refer to total revenue and total profit.
 
-4 informações são apresentadas de forma gráfica:
+4 pieces of information are presented graphically:
 
-Análise por Período, apresentado a partir de um gráfico de colunas e um de linhas trazendo a receita total por mês.
+Analysis by Period, presented using a column graph and a line graph showing total revenue per month.
 
-Análise de Produtos, representado por um gráfico de dispersão que correlaciona o total de itens vendidos e a receita total, porém com a possibilidade de avaliar também o lucro total, representado pelo tamanho de cada item.
+Product Analysis, represented by a scatter plot that correlates the total number of items sold and total revenue, but with the possibility of also evaluating total profit, represented by the size of each item.
 
-Uma matriz que permite fazer a análise por supervisor e por colaborador, avaliando a receita total e o lucro total. 
+A matrix that allows analysis by supervisor and employee, evaluating total revenue and total profit.
 
-Por fim, um gráfico de indicador (velocímetro) que compara a receita total com uma meta previamente definida e, a partir de uma formatação condicional, apresenta o indicador na cor verde ou vermelha de acordo com a meta.
+Finally, an indicator graph (speedometer) that compares total revenue with a previously defined target and, based on conditional formatting, presents the indicator in green or red according to the target.
+
 ```
 COR DO VELOCÍMETRO = 
 SWITCH(
@@ -263,23 +264,23 @@ SWITCH(
 )
 ```
 
-## Dashboard de Pesquisa de Satisfação
+## Satisfaction Survey Dashboard
 
-### Desafio
+### Challenge
 
-Você trabalha em uma Instituição Financeira, que realizou recentemente uma pesquisa para analisar a satisfação dos clientes. Esta pesquisa é baseada em uma metodologia denominada Net Promoter Score (NPS), que avalia o grau de fidelidade dos clientes.
+You work at a Financial Institution that recently conducted a survey to analyze customer satisfaction. This survey is based on a methodology called Net Promoter Score (NPS), which assesses the degree of customer loyalty.
 
-Tem-se os seguintes parâmetros:
+The following parameters are used:
 
-- Notas 1, 2, 3, 4 e 5 = Clientes Detratores 
-- Notas 6, 7 e 8 = Clientes Neutros
-- Notas 9 e 10 = Clientes Promotores
+- Scores 1, 2, 3, 4 and 5 = Detractor Customers
+- Scores 6, 7 and 8 = Neutral Customers
+- Scores 9 and 10 = Promoter Customers
+  
+### Database
 
-### Base de Dados
+File in .xlsx format, with 4 databases available:
 
-Arquivo no formato .xlsx, com 4 banco de dados disponíveis:
-
-Resposta Clientes NPS
+NPS Customer Response
 ```
 schema = (
     data_resposta2, 
@@ -288,7 +289,7 @@ schema = (
     sentimento
 )
 ```
-Respostas Clientes Atributos
+Customer Responses Attributes
 ```
 schema = (
     id_cliente2, 
@@ -298,7 +299,7 @@ schema = (
     região
 )
 ```
-Informações Clientes
+Customer Information
 ```
 schema = (
     cod_cliente2,
@@ -308,7 +309,7 @@ schema = (
     tempo_relacionamento 
 )
 ```
-Localidades Clientes
+Customer Locations
 ```
 schema = (
     id_cliente2,
@@ -320,18 +321,18 @@ schema = (
 ```
 ### Dashboard
 
-Algumas transformações foram realizadas via Power Query, tais como: 
+Some transformations were performed via Power Query, such as:
 
-Foi realizado um join da tabela de Informações Clientes com a de Localidades Clientes, para trazer o endereço de cada cliente
+A join was performed between the Customer Information table and the Customer Locations table to retrieve the address of each customer
 ```
 = Table.NestedJoin(#"Tipo Alterado1", {"COD_CLIENTE"}, Cadastro_ClienteLocalidade, {"ID_CLIENTE"}, "Cadastro_ClienteLocalidade", JoinKind.LeftOuter)
 = Table.ExpandTableColumn(#"Consultas Mescladas", "Cadastro_ClienteLocalidade", {"CIDADE", "UF", "REGIÃO"}, {"CIDADE", "UF", "REGIÃO"})
 ```
-Foi adicionada uma coluna na tabela Resposta Clientes NPS que identifica o status de acordo com a nota final
+A column has been added to the NPS Customer Response table that identifies the status according to the final score
  ```
 = Table.AddColumn(#"Tipo Alterado", "STATUS_NPS", each if [NOTA_FINAL_NPS] >= 9 then "PROMOTOR" else if [NOTA_FINAL_NPS] <= 5 then "DETRATOR" else "NEUTRO")
  ```    
-Foi também criada uma tabela Calendário a partir do Power Query
+A Calendar table was also created from Power Query
 ``` 
 DataMin = List.Min(fRespostasNPS[DATA_RESPOSTA]),
 DataMax = List.Max(fRespostasNPS[DATA_RESPOSTA]),
@@ -354,18 +355,18 @@ ConverterTabelaDatas = Table.FromList(ListarDatas, Splitter.SplitByNothing(), nu
 #"Colunas Reordenadas" = Table.ReorderColumns(#"Coluna Condicional Adicionada",{"DATA", "Semestre", "Trimestre", "Mês", "Nome do Mês", "Mês Abreviado", "Semana do Mês", "Semana do Ano", "Dia do Ano", "Nome do Dia"})
 ```  
 
-Esse Dashboard apresenta 2 tabelas fato e 2 tabelas dimensão. A tabela Calendário se relaciona com a tabela de Respostas Clientes Atributos pelo campo "Data Resposta" em uma relação de 1 para muitos e com a tabela de Resposta Clientes NPS pelo campo "Data_Resposta" novamente em uma relação de 1 para muitos. A tabela Clientes se relaciona com a tabela de Respostas Clientes Atributos pelo campo "Cod_Cliente" em uma relação de 1 para muitos e com a tabela de Resposta Clientes NPS pelo campo "Cod_Cliente" novamente em uma relação de 1 para muitos. 
+This Dashboard presents 2 fact tables and 2 dimension tables. The Calendar table is related to the Customer Responses Attributes table by the "Response Date" field in a 1-to-many relationship and to the Customer Responses NPS table by the "Response_Date" field again in a 1-to-many relationship. The Customers table is related to the Customer Responses Attributes table by the "Customer_ID" field in a 1-to-many relationship and to the Customer Responses NPS table by the "Customer_ID" field again in a 1-to-many relationship.
 
-A parte visual do Dash se divide em três principais grupos: filtros, big numbers para análise de satisfação geral e gráficos interativos. 
+The visual part of the Dash is divided into three main groups: filters, big numbers for general satisfaction analysis and interactive charts.
 
-Os filtros referem-se aos gerentes, estados e datas.
+The filters refer to managers, states and dates.
 
-A parte de análise de satisfação geral apresenta big numbers de total de respostas, total de promotores, média do NPS, total de neutros, total de detratores e um farol definido pela média do NPS. Ainda nessa parte, há um gráfico de donut apresentando o percentual de cada status e uma nuvem de palavras a partir do sentimento definido na pesquisa.
+The general satisfaction analysis part presents big numbers of total responses, total promoters, average NPS, total neutrals, total detractors and a lighthouse defined by the average NPS. Also in this section, there is a donut chart showing the percentage of each status and a word cloud based on the sentiment defined in the survey.
 
-4 informações são apresentadas de forma gráfica:
+Four pieces of information are presented graphically:
 
-Análise Notas dos Atributos, representado por um gráfico importado do tipo Radar Chart, que avalia a média de nota de acordo com cada atributo: Aplicativo, Inovação, Tarifas, Serviços, Suporte e Confiabilidade.
+Attribute Score Analysis, represented by an imported Radar Chart chart, which evaluates the average score according to each attribute: Application, Innovation, Rates, Services, Support and Reliability.
 
-Análise NPS por Período, representado por um gráfico de área que traz a média do NPS por mês.
+NPS Analysis by Period, represented by an area chart that shows the average NPS per month.
 
-Por fim, dois gráficos de barras para análise do NPS por região e por gerente.
+Finally, two bar charts for analyzing NPS by region and by manager.
